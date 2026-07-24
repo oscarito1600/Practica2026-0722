@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo con Promesas</title>
+</head>
+
+<body>
+    <h1>Ejemplo con Promesas</h1>
+    <button type="button" id="btnAdomicilio">Pedir a domicilio</button>
+    <button type="button" id="btnLocal">Pedir en local</button>
+    <h3>Resultado:</h3>
+    <div id="resultado">Esperando orden ...</div>
+
+    <script>
+        const resultado = document.querySelector("#resultado");
+        const btnAdomicilio = document.querySelector("#btnAdomicilio");
+        const btnLocal = document.querySelector("#btnLocal");
+
+        // Convertida a Promesa (ya no necesita el callback)
+        function prepararPizza(sabor) {
+            resultado.innerHTML = "Preparando pizza de sabor: " + sabor;
+            return new Promise((resolve, error) => {
+                setTimeout(() => {
+                    if (sabor == "coco") {
+                        error("Sabor incorrecto");
+                    }
+                    else {
+                        resolve(sabor); // La promesa se cumple exitosamente tras 3 segundos
+                    }
+
+                }, 3000);
+            });
+        }
+
+        function entregarAlCliente(sabor) {
+            resultado.innerHTML = "Repartidor: pizza de sabor " + sabor + " entregada";
+        }
+
+        function comerEnElLocal(sabor) {
+            resultado.innerHTML = "Mesero: pizza de sabor " + sabor + " servida en la mesa";
+        }
+
+        // Eventos usando .then()
+        btnAdomicilio.addEventListener("click", () => {
+            prepararPizza("pepperoni")
+                .then((sabor) => entregarAlCliente(sabor));
+        });
+
+        btnLocal.addEventListener("click", () => {
+            prepararPizza("hawaiana")
+                .then((sabor) => comerEnElLocal(sabor))
+                .catch((error)=>{alert(error)})
+                .finally(()=>{
+                    console.log("Proceso terminado tanto en forma correcta o con error");
+                });
+        });
+    </script>
+</body>
+
+</html>
