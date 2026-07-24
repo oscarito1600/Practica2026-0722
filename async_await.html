@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo con Async y Await</title>
+</head>
+
+<body>
+    <h1>Ejemplo con Async y Await</h1>
+    <button type="button" id="btnAdomicilio">Pedir a domicilio</button>
+    <button type="button" id="btnLocal">Pedir en local</button>
+    <h3>Resultado:</h3>
+    <div id="resultado">Esperando orden ...</div>
+
+    <script>
+        const resultado = document.querySelector("#resultado");
+        const btnAdomicilio = document.querySelector("#btnAdomicilio");
+        const btnLocal = document.querySelector("#btnLocal");
+
+        // Mantener la función base que retorna la Promesa
+        function prepararPizza(sabor) {
+            resultado.innerHTML = "Preparando pizza de sabor: " + sabor;
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (sabor === "coco") {
+                        reject("Sabor incorrecto");
+                    } else {
+                        resolve(sabor);
+                    }
+                }, 3000);
+            });
+        }
+
+        function entregarAlCliente(sabor) {
+            resultado.innerHTML = "Repartidor: pizza de sabor " + sabor + " entregada";
+        }
+
+        function comerEnElLocal(sabor) {
+            resultado.innerHTML = "Mesero: pizza de sabor " + sabor + " servida en la mesa";
+        }
+
+        // Manejadores con async / await
+        btnAdomicilio.addEventListener("click", async () => {
+            try {
+                const sabor = await prepararPizza("coco");
+                entregarAlCliente(sabor);
+            } catch (error) {
+                alert(error);
+            } finally {
+                console.log("Proceso terminado tanto en forma correcta o con error");
+            }
+        });
+
+        btnLocal.addEventListener("click", async () => {
+            try {
+                const sabor = await prepararPizza("hawaiana");
+                comerEnElLocal(sabor);
+            } catch (error) {
+                alert(error);
+            } finally {
+                console.log("Proceso terminado tanto en forma correcta o con error");
+            }
+        });
+    </script>
+</body>
+
+</html>
