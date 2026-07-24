@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo con callback</title>
+</head>
+
+<body>
+    <h1>Ejemplo con callback</h1>
+    <button type="button" id="btnAdomicilio">Pedir a domicilio</button>
+    <button type="button" id="btnLocal">Pedir en local</button>
+    <h3>Resultado:</h3>
+    <div id="resultado">Esperando orden ...</div>
+    <script>
+        const resultdo = document.querySelector("#resultado");
+        const btnAdomicilio = document.querySelector("#btnAdomicilio");
+        const btnLocal = document.querySelector("#btnLocal");
+        function prepararPizza(sabor, callback) {
+            resultdo.innerHTML = "Preparando pizza de sabor: " + sabor;
+            setTimeout(() => {
+                callback(sabor);
+            }, 3000);
+        }
+        function entregarAlCliente(sabor) {
+            resultdo.innerHTML = "Repartidor  pizza de sabor: " + sabor + " entregada";
+        }
+        function comerEnElLocal(sabor) {
+            resultdo.innerHTML = "Mesero  pizza de sabor: " + sabor + " servida en la mesa";
+        }
+        btnAdomicilio.addEventListener("click", () => {
+            prepararPizza("pepperoni", entregarAlCliente);
+        });
+        btnLocal.addEventListener("click", () => {
+            prepararPizza("hawaiana", comerEnElLocal);
+        })
+    </script>
+</body>
+
+</html>
