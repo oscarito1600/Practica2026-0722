@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo con Async y Await en paralelo</title>
+</head>
+
+<body>
+    <h1>Ejemplo con Async y Await en paralelo</h1>
+    <button type="button" id="btnAdomicilio">Pedir a domicilio</button>
+    <button type="button" id="btnLocal">Pedir en local</button>
+    <h3>Resultado:</h3>
+    <div id="resultado">Esperando orden ...</div>
+
+    <script>
+        const resultado = document.querySelector("#resultado");
+        const btnAdomicilio = document.querySelector("#btnAdomicilio");
+        const btnLocal = document.querySelector("#btnLocal");
+
+        // Mantener la función base que retorna la Promesa
+        function prepararPizza(sabor, tiempo) {
+            tiempo = tiempo == undefined ? 3000 : tiempo;
+            resultado.innerHTML += "<p>Preparando pizza de sabor: " + sabor + "</p>";
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (sabor === "coco") {
+                        reject("Sabor incorrecto");
+                    } else {
+                        resolve(sabor);
+                    }
+                }, tiempo);
+            });
+        }
+
+        function entregarAlCliente(sabor) {
+            resultado.innerHTML = "Repartidor: pizza de sabor " + sabor + " entregada";
+        }
+
+        function comerEnElLocal(sabor) {
+            resultado.innerHTML += "<p>Mesero: pizza de sabor " + sabor + " servida en la mesa</p>";
+        }
+
+        // Manejadores con async / await
+        btnAdomicilio.addEventListener("click", async () => {
+            try {
+                const sabor = await prepararPizza("coco");
+                entregarAlCliente(sabor);
+            } catch (error) {
+                alert(error);
+            } finally {
+                console.log("Proceso terminado tanto en forma correcta o con error");
+            }
+        });
+
+        btnLocal.addEventListener("click", async () => {
+            try {
+                console.time("Tiempo de preparación");
+                // Lanzamos y esperamos ambas promesas al mismo tiempo
+                const [saborHawaiana, saborPina] = await Promise.all([
+                    prepararPizza("hawaiana", 5000),
+                    prepararPizza("piña", 8000)
+                ]);
+                console.timeEnd("Tiempo de preparación");
+                // Una vez que AMBAS están listas, procesamos los resultados
+                comerEnElLocal(saborPina);
+                comerEnElLocal(saborHawaiana);
+
+            } catch (error) {
+                alert(error);
+            } finally {
+                console.log("Proceso terminado tanto en forma correcta o con error");
+            }
+        });
+    </script>
+</body>
+
+</html>
